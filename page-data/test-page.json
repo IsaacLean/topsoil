@@ -1,0 +1,7 @@
+{
+    "data": {
+        "section": "Lorem Ipsum",
+        "title": "Test Page"
+    },
+    "tpl": "test.tpl.html"
+}

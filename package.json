@@ -2,9 +2,13 @@
   "name": "topsoil",
   "version": "0.0.1",
   "description": "",
-  "main": "topsoil.js",
+  "main": "topsoil-app.js",
   "scripts": {
+    "start": "./node_modules/.bin/electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Matthew 'Isaac' Lean"
+  "author": "Matthew 'Isaac' Lean",
+  "devDependencies": {
+    "electron": "^1.4.2"
+  }
 }

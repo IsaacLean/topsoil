@@ -1,0 +1,7 @@
+{
+    "data": {
+        "section": "Foobar",
+        "title": "Test Page 2"
+    },
+    "tpl": "test.tpl.html"
+}
