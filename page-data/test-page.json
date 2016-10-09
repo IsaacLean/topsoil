@@ -3,5 +3,6 @@
         "section": "Lorem Ipsum",
         "title": "Test Page"
     },
+    "loc": "/",
     "tpl": "test.tpl.html"
 }

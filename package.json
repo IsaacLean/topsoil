@@ -9,6 +9,8 @@
   },
   "author": "Matthew 'Isaac' Lean",
   "devDependencies": {
-    "electron": "^1.4.2"
+    "electron": "^1.4.2",
+    "eslint": "^3.7.1",
+    "eslint-plugin-react": "^6.3.0"
   }
 }

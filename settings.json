@@ -1,3 +1,5 @@
 {
-    "templateDir": "tpl"
+    "buildDir": "build",
+    "pageDataDir": "page-data",
+    "tplDir": "tpl"
 }

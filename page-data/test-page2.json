@@ -3,5 +3,6 @@
         "section": "Foobar",
         "title": "Test Page 2"
     },
+    "loc": "/test",
     "tpl": "test.tpl.html"
 }
