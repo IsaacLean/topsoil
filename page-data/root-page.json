@@ -1,0 +1,8 @@
+{
+    "data": {
+        "section": "Lorem Ipsum",
+        "title": "Root Page"
+    },
+    "loc": "/",
+    "tpl": "test.tpl.html"
+}

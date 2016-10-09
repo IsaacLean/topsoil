@@ -1,0 +1,8 @@
+{
+    "data": {
+        "section": "Oh Baby",
+        "title": "Test Page Child"
+    },
+    "loc": "/test-page/child",
+    "tpl": "test.tpl.html"
+}

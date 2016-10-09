@@ -89,22 +89,42 @@ const util = {
     },
 
     // Create directory if it is not found using Promise API
-    mkdirIfNotFound: function(dirLoc) {
-        return new Promise(function(resolve, reject) {
-            fs.mkdir(dirLoc, function(err) {
-                if(err) {
-                    if(err.code === 'EEXIST') {
-                        util.errPrint('warning', '"'+dirLoc+'" already exists.');
-                        resolve(dirLoc);
-                    } else {
-                        reject(err);
-                    }
-                } else {
-                    util.logPrint('"'+dirLoc+'" is made.');
-                    resolve('build');
-                }
+    chainMkdirIfNotFound: function(dirLoc) {
+        let splitPageDataLoc = util.cleanPageDataLoc(dirLoc).split('/');
+        let mkdirChain = [];
+
+        for(let i in splitPageDataLoc) {
+            let dir = [];
+
+            for(let j=0; j <= i; ++j) {
+                dir.push(splitPageDataLoc[j]);
+            }
+
+            if(dir.length > 0) {
+                mkdirChain.push(dir.join('/'));
+            }
+        }
+
+        // Read page data files
+        return mkdirChain.reduce(function(sequence, dirLoc) {
+            return sequence.then(function() {
+                return new Promise(function(resolve, reject) {
+                    fs.mkdir(dirLoc, function(err) {
+                        if(err) {
+                            if(err.code === 'EEXIST') {
+                                util.errPrint('warning', '"'+dirLoc+'" already exists.');
+                                resolve(dirLoc);
+                            } else {
+                                reject(err);
+                            }
+                        } else {
+                            util.logPrint('"'+dirLoc+'" has been created.');
+                            resolve('build');
+                        }
+                    });
+                });
             });
-        });
+        }, Promise.resolve());
     },
 
     // Write file using Promise API
@@ -113,8 +133,12 @@ const util = {
 
         return new Promise(function(resolve, reject) {
             fs.writeFile(fileLoc, content, encoding, (err) => {
-                if(err) reject(err);
-                resolve(fileLoc);
+                if(err) {
+                    reject(err);
+                } else {
+                    util.logPrint('"'+fileLoc+'" has written.');
+                    resolve(fileLoc);
+                }
             });
         });
     }
@@ -196,25 +220,9 @@ module.exports = {
             }, Promise.resolve());
         }).then(function() {
             // Make build directory if it doesn't exist
-            return util.mkdirIfNotFound(model.settings.buildDir);
+            return util.chainMkdirIfNotFound(model.settings.buildDir);
         }).then(function() {
             // TODO: recursively remove files in existing buildDir
-
-            // model.pageDataDir.forEach(function(pageDataFileName) {
-            //     let pageData = model.pageData[pageDataFileName];
-            //     let fileContent = tplEngine(model.tpl[pageData.tpl], pageData);
-
-            //     // Build new location
-            //     if(typeof pageData.loc === 'string') {
-            //         if(pageData.loc.length > 0 && pageData.loc[0] === '/') {
-            //             util.mkdirIfNotFound(model.settings.buildDir+pageData.loc);
-            //         } else {
-            //             throw new Error('Page data location must at least be set to "/".');
-            //         }
-            //     } else {
-            //         throw new Error('Page data location is not a string.');
-            //     }
-            // });
 
             // Write new build in buildDir
             return model.pageDataDir.reduce(function(sequence, pageDataFileName) {
@@ -233,8 +241,7 @@ module.exports = {
                         }
                     });
                 }).then(function(pageDataLoc) {
-                    // need to recursively create directories
-                    return util.mkdirIfNotFound(pageDataLoc);
+                    return util.chainMkdirIfNotFound(pageDataLoc);
                 }).then(function() {
                     let pageData = model.pageData[pageDataFileName];
                     let pageDataLoc = util.cleanPageDataLoc(model.settings.buildDir+pageData.loc)+'/index.html';
@@ -243,7 +250,7 @@ module.exports = {
                 });
             }, Promise.resolve());
         }).then(function() {
-            util.logPrint('SUCCESS -', model);
+            util.logPrint('<BUILD SUCCESS> -', model);
 
             return model;
         }).catch(function(err) {

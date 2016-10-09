@@ -1,8 +1,8 @@
 {
     "data": {
-        "section": "Lorem Ipsum",
+        "section": "Foobar",
         "title": "Test Page"
     },
-    "loc": "/",
+    "loc": "/test-page",
     "tpl": "test.tpl.html"
 }
