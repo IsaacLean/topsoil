@@ -169,20 +169,28 @@ module.exports = {
         }).catch(function() {
             model.settings = {}; // settings not found
         }).then(function() {
-            // Set default directory names if they are undefined
-            if(model.settings.buildDir === undefined) {
-                model.settings.buildDir = 'build';
-            }
+            return new Promise(function(resolve, reject) {
+                // Set default directory names if they are undefined
+                if(model.settings.buildDir === undefined) {
+                    model.settings.buildDir = 'build';
+                } else if(typeof model.settings.buildDir !== 'string') {
+                    reject('"buildDir" value must be a string.');
+                }
 
-            if(model.settings.pageDataDir === undefined) {
-                model.settings.pageDataDir = 'page-data';
-            }
+                if(model.settings.pageDataDir === undefined) {
+                    model.settings.pageDataDir = 'page-data';
+                } else if(typeof model.settings.pageDataDir !== 'string') {
+                    reject('"pageDataDir" value must be a string.');
+                }
 
-            if(model.settings.tplDir === undefined) {
-                model.settings.tplDir = 'tpl';
-            }
+                if(typeof model.settings.theme !== 'string') {
+                    reject('"theme" value must be a string.');
+                }
 
-            return util.readDir(model.settings.pageDataDir);
+                resolve(model.settings.pageDataDir);
+            });
+        }).then(function(pageDataDir) {
+            return util.readDir(pageDataDir);
         }).then(function(pageDataDir) { // Read file names in page data directory
             model.pageDataDir = pageDataDir;
 
@@ -202,14 +210,14 @@ module.exports = {
                 });
             }, Promise.resolve());
         }).then(function() { // Read file names in template directory
-            return util.readDir(model.settings.tplDir);
+            return util.readDir('themes/'+model.settings.theme+'/tpl');
         }).then(function(tplDir) {
             model.tplDir = tplDir;
 
             // Read template files
             return tplDir.reduce(function(sequence, fileName) {
                 return sequence.then(function() {
-                    return util.readFile(model.settings.tplDir+'/'+fileName, 'utf-8');
+                    return util.readFile('themes/'+model.settings.theme+'/tpl/'+fileName, 'utf-8');
                 }).then(function(tpl) {
                     if(model.tpl === null) {
                         model.tpl = {};

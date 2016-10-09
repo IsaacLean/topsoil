@@ -1,5 +1,4 @@
 {
-    "buildDir": "build",
     "pageDataDir": "page-data",
-    "tplDir": "tpl"
+    "theme": "test-theme"
 }
